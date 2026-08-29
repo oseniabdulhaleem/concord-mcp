@@ -68,7 +68,7 @@ describe('installMcpConfigs', () => {
       expect(existsSync(join(root, relPath))).toBe(true);
       const content = readFileSync(join(root, relPath), 'utf8');
       expect(content).toContain(CONCORD_SERVER_COMMAND);
-      expect(content).toContain(root);
+      expect(content).toContain(JSON.stringify(root).slice(1,-1));
     }
     const gemini = z
       .object({
