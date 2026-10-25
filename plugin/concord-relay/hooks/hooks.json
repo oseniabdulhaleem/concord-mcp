@@ -31,7 +31,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "concord inbox observe"
+            "command": "concord inbox drain --from-hook --format pre-tool-use"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "concord inbox drain --from-hook --format permission-request"
           }
         ]
       }

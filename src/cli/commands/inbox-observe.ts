@@ -196,10 +196,12 @@ function observeRead(
  * - Any hook from the session itself can carry read evidence (its prompt or
  *   transcript). Hooks fired inside a subagent are ignored: a subagent's
  *   activity is not proof the session's own model saw anything.
- * - `PreToolUse` for `AskUserQuestion`, and a `permission_prompt`
- *   notification, mean the session is about to block on its user. Recorded so
- *   a sender can be told; delivery is never held on it, because dismissing a
- *   prompt with Esc or Deny fires no hook to clear it.
+ * - `PreToolUse` for `AskUserQuestion`, `PermissionRequest`, and a
+ *   `permission_prompt` notification mean the session is about to block on its
+ *   user. Recorded so a sender can be told; delivery is never held on it,
+ *   because dismissing a prompt with Esc or Deny fires no hook to clear it.
+ *   `PermissionRequest` fires as the prompt opens; the notification only after
+ *   it has waited about six seconds.
  * - `SessionEnd`: whatever this session was handed and never read goes back
  *   to the queue.
  * - `SessionStart` from `startup` is a new session for this agent: anything
@@ -221,6 +223,9 @@ export function observeHookEvent(
   switch (eventName(hook)) {
     case 'PreToolUse':
       if (hook.tool_name === ASK_USER_TOOL) awaitUser(repos, agentId);
+      break;
+    case 'PermissionRequest':
+      awaitUser(repos, agentId);
       break;
     case 'Notification':
       if (hook.notification_type === 'permission_prompt') awaitUser(repos, agentId);
